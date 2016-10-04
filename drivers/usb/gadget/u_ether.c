@@ -1175,8 +1175,10 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	/* throttle high/super speed IRQ rate back slightly */
 	if (gadget_is_dualspeed(dev->gadget) &&
 		 (dev->gadget->speed == USB_SPEED_HIGH ||
-		  dev->gadget->speed == USB_SPEED_SUPER)) {
-		dev->tx_qlen++;
+		  dev->gadget->speed == USB_SPEED_SUPER)) &&
+					!list_empty(&dev->tx_reqs))
+			? ((atomic_read(&dev->tx_qlen) % qmult) != 0)
+			: 0;
 		if (dev->tx_qlen == (qmult/2)) {
 			req->no_interrupt = 0;
 			dev->tx_qlen = 0;
