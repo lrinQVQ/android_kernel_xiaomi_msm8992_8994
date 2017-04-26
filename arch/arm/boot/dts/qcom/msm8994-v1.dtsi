@@ -244,3 +244,9 @@
 		};
 	};
 };
+
+&cnss {
+	wlan-bootstrap-gpio = <&msm_gpio 112 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&cnss_default &cnss_lpass_default>;
+};
