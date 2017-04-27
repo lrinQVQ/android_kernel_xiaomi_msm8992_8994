@@ -20,6 +20,13 @@ config ASHMEM
 	  It is, in theory, a good memory allocator for low-memory devices,
 	  because it can discard shared memory units when under memory pressure.
 
+config LARGE_LOGCAT_SIZE
+	int "Adust android log buffer sizes"
+	default 2048
+	depends on ANDROID_LOGGER
+	help
+	  Some buffer size might be larger than others for storing more log.
+
 config ANDROID_TIMED_OUTPUT
 	bool "Timed output class driver"
 	default y
