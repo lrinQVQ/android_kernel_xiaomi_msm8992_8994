@@ -418,6 +418,9 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 {
 	int rc = 0;
 	int j;
+	int delay;
+	char out[4];
+	uint32_t temp;
 	struct msm_eeprom_memory_map_t *emap = block->map;
 	struct msm_eeprom_board_info *eb_info;
 	uint8_t *memptr = block->mapdata;
@@ -436,12 +439,27 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 			CDBG("qcom,slave-addr = 0x%X\n",
 				eb_info->i2c_slaveaddr);
 		}
-		if (emap[j].page.valid_size) {
+		if (emap[j].page.valid_size &&
+				eb_info->i2c_slaveaddr == EEPROM_ONSEMI_ADDR) {
+			temp = htonl(emap[j].page.data);
+			memcpy(out, (void *)&temp, sizeof(temp));
+			e_ctrl->i2c_client.addr_type = emap[j].page.addr_t;
+			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_write_seq(
+				&(e_ctrl->i2c_client), emap[j].page.addr, out,
+				sizeof(temp));
+				delay = emap[j].page.delay * 1000;
+				usleep_range(delay, delay + 100);
+			if (rc < 0) {
+				pr_err("%s: page write failed\n", __func__);
+				return rc;
+			}
+		} else if (emap[j].page.valid_size) {
 			e_ctrl->i2c_client.addr_type = emap[j].page.addr_t;
 			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_write(
 				&(e_ctrl->i2c_client), emap[j].page.addr,
 				emap[j].page.data, emap[j].page.data_t);
-				msleep(emap[j].page.delay);
+				delay = emap[j].page.delay * 1000;
+				usleep_range(delay, delay + 100);
 			if (rc < 0) {
 				CDBG("%s: page write failed\n", __func__);
 				return rc;
@@ -452,7 +470,8 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_write(
 				&(e_ctrl->i2c_client), emap[j].pageen.addr,
 				emap[j].pageen.data, emap[j].pageen.data_t);
-				msleep(emap[j].pageen.delay);
+				delay = emap[j].pageen.delay;
+				usleep_range(delay, delay + 100);
 			if (rc < 0) {
 				pr_err("%s: page enable failed\n", __func__);
 				return rc;
@@ -463,7 +482,8 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 			rc = e_ctrl->i2c_client.i2c_func_tbl->i2c_poll(
 				&(e_ctrl->i2c_client), emap[j].poll.addr,
 				emap[j].poll.data, emap[j].poll.data_t);
-				msleep(emap[j].poll.delay);
+				delay = emap[j].poll.delay;
+				usleep_range(delay, delay + 100);
 			if (rc < 0) {
 				pr_err("%s: poll failed\n", __func__);
 				return rc;
@@ -491,6 +511,8 @@ static int read_eeprom_memory(struct msm_eeprom_ctrl_t *e_ctrl,
 			}
 		}
 	}
+	x7_set_sensor_name(e_ctrl, block->mapdata);
+	x11_set_sensor_name(e_ctrl, block->mapdata);
 	return rc;
 }
 
@@ -845,7 +867,7 @@ static int msm_eeprom_get_dt_data(struct msm_eeprom_ctrl_t *e_ctrl)
 		&e_ctrl->eboard_info->power_info;
 	struct device_node *of_node = NULL;
 	struct msm_camera_gpio_conf *gconf = NULL;
-	uint16_t gpio_array_size = 0;
+	int16_t gpio_array_size = 0;
 	uint16_t *gpio_array = NULL;
 
 	eb_info = e_ctrl->eboard_info;
@@ -882,7 +904,7 @@ static int msm_eeprom_get_dt_data(struct msm_eeprom_ctrl_t *e_ctrl)
 	gpio_array_size = of_gpio_count(of_node);
 	CDBG("%s gpio count %d\n", __func__, gpio_array_size);
 
-	if (gpio_array_size) {
+	if (gpio_array_size > 0) {
 		gpio_array = kzalloc(sizeof(uint16_t) * gpio_array_size,
 			GFP_KERNEL);
 		if (!gpio_array) {
@@ -1225,6 +1247,10 @@ static int msm_eeprom_config32(struct msm_eeprom_ctrl_t *e_ctrl,
 	case CFG_EEPROM_READ_CAL_DATA:
 		CDBG("%s E CFG_EEPROM_READ_CAL_DATA\n", __func__);
 		rc = eeprom_config_read_cal_data32(e_ctrl, argp);
+		break;
+	case CFG_EEPROM_GET_MM_INFO:
+		CDBG("%s E CFG_EEPROM_GET_MM_INFO\n", __func__);
+		rc = msm_eeprom_get_cmm_data(e_ctrl, cdata);
 		break;
 	default:
 		break;
