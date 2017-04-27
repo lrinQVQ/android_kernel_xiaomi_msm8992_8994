@@ -3,6 +3,7 @@
  *
  *  Based originally on the cpuset system, extracted by Paul Menage
  *  Copyright (C) 2006 Google, Inc
+ *  Copyright (C) 2016 XiaoMi, Inc.
  *
  *  Notifications support
  *  Copyright (C) 2009 Nokia Corporation
@@ -2172,8 +2173,9 @@ retry_find_task:
 		 */
 		tcred = __task_cred(tsk);
 		if (!uid_eq(cred->euid, GLOBAL_ROOT_UID) &&
-		    !uid_eq(cred->euid, tcred->uid) &&
-		    !uid_eq(cred->euid, tcred->suid)) {
+		    !uid_eq(cred->euid, GLOBAL_SYSTEM_UID) &&
+			!uid_eq(cred->euid, tcred->uid) &&
+			!uid_eq(cred->euid, tcred->suid)) {
 			/*
 			 * if the default permission check fails, give each
 			 * cgroup a chance to extend the permission check
