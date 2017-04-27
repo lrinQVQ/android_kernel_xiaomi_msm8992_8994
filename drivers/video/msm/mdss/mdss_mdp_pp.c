@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2016 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -3040,9 +3041,15 @@ static int pp_read_argc_lut_cached(struct mdp_pgc_lut_data *config)
 	switch (PP_LOCAT(config->block)) {
 	case MDSS_PP_LM_CFG:
 		pgc_ptr = &mdss_pp_res->argc_disp_cfg[disp_num];
+		if (!(config->flags & MDP_PP_OPS_READ))
+			mdss_pp_res->pp_disp_flags[disp_num] |=
+				PP_FLAGS_DIRTY_ARGC;
 		break;
 	case MDSS_PP_DSPP_CFG:
 		pgc_ptr = &mdss_pp_res->pgc_disp_cfg[disp_num];
+		if (!(config->flags & MDP_PP_OPS_READ))
+			mdss_pp_res->pp_disp_flags[disp_num] |=
+				PP_FLAGS_DIRTY_PGC;
 		break;
 	default:
 		return -EINVAL;
