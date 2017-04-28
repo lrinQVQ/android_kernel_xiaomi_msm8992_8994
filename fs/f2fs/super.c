@@ -1264,8 +1264,6 @@ static const struct export_operations f2fs_export_ops = {
 	.get_parent = f2fs_get_parent,
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 static int parse_options(struct super_block *sb, struct f2fs_sb_info *sbi,
 				char *options)
 {
