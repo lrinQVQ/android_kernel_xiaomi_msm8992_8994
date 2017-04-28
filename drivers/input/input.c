@@ -198,10 +198,6 @@ static void input_repeat_key(unsigned long data)
 	}
 
 	spin_unlock_irqrestore(&dev->event_lock, flags);
-		if (code == BTN_TOUCH) {
-			if (!mod_timer(&dev->counter, jiffies + 1 * HZ))
-				dev->input_active_start = get_jiffies_64();
-		}
 }
 
 #define INPUT_IGNORE_EVENT	0
@@ -437,6 +433,10 @@ void input_event(struct input_dev *dev,
 		spin_lock_irqsave(&dev->event_lock, flags);
 		input_handle_event(dev, type, code, value);
 		spin_unlock_irqrestore(&dev->event_lock, flags);
+		if (code == BTN_TOUCH) {
+			if (!mod_timer(&dev->counter, jiffies + 1 * HZ))
+				dev->input_active_start = get_jiffies_64();
+		}
 	}
 }
 EXPORT_SYMBOL(input_event);
