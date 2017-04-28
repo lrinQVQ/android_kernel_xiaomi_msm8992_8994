@@ -32,7 +32,7 @@
 #include <linux/platform_device.h>
 #include <asm/uaccess.h>
 #include <asm/atomic.h>
-#include <tspdrv.h>
+#include "tspdrv.h"
 
 
 static int g_nTimerPeriodMs = 5; /* 5ms timer by default. This variable could be used by the SPI.*/
