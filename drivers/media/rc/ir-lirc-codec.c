@@ -306,7 +306,7 @@ static long ir_lirc_ioctl(struct file *filep, unsigned int cmd,
 	return ret;
 }
 
-
+static int ir_lirc_open(void *data)
 {
 	struct lirc_codec *lirc = data;
 	struct rc_dev *dev = lirc->dev;
