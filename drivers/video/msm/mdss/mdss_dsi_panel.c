@@ -282,7 +282,6 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 	struct mdss_dsi_ctrl_pdata *ctrl_pdata = NULL;
 	struct mdss_panel_info *pinfo = NULL;
 	static u64 timestamp_panelon;
-	static u64 timestamp_panelon;
 	int i, rc = 0;
 
 	if (pdata == NULL) {

@@ -965,7 +965,7 @@ static int snd_pcm_pre_stop(struct snd_pcm_substream *substream, int state)
 static int snd_pcm_do_stop(struct snd_pcm_substream *substream, int state)
 {
 	if (!substream || !substream->runtime || !substream->ops->trigger)
-+		return 0;
+		return 0;
 	if (substream->runtime->trigger_master == substream &&
 	    snd_pcm_running(substream))
 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);

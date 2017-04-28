@@ -1141,6 +1141,7 @@ static ssize_t ncm_ethaddr_store(struct device *dev,
 
 static DEVICE_ATTR(ncm_ethaddr, S_IRUGO | S_IWUSR, ncm_ethaddr_show,
 					       ncm_ethaddr_store);
+
 static struct device_attribute *ncm_function_attributes[] = {
 	&dev_attr_ncm_ethaddr,
 	NULL
