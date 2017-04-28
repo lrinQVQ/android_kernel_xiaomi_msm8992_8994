@@ -1293,7 +1293,7 @@ static void socinfo_print(void)
 	}
 }
 
-+static inline void check_msm8994_version(void)
+static inline void check_msm8994_version(void)
 {
 	if (SOCINFO_VERSION_MAJOR(socinfo->v1.version) == 1) {
 		pr_err("MSM8994 V1 no longer supported\n");
