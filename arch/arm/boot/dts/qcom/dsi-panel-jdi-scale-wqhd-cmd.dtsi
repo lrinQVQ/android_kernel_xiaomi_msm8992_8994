@@ -18,7 +18,7 @@
  *---------------------------------------------------------------------------*/
 &mdss_mdp {
 	dsi_jdi_scale_wqhd_cmd: qcom,mdss_dsi_jdi_scale_wqhd_command {
-		qcom,mdss-dsi-panel-name = "jdi scale wqhd cmd mode dsi panel";
+		qcom,mdss-dsi-panel-name = "jdi fbc20 wqhd cmd mode dsi panel";
 		qcom,mdss-dsi-panel-id = <2>;
 		qcom,mdss-dsi-panel-controller = <&mdss_dsi0>;
 		qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
@@ -449,6 +449,7 @@
 		qcom,mdss-dsi-panel-timings = [b4 37 1d 00 96 94 20 3b 20 03 04 00];
 		qcom,mdss-dsi-t-clk-post = <0x19>;
 		qcom,mdss-dsi-t-clk-pre = <0x29>;
+		qcom,mdss-brightness-max-level = <4095>;
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-reset-sequence = <1 10>, <0 10>, <1 10>;
